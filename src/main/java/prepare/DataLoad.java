@@ -1,29 +1,46 @@
 package prepare;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class DataLoad {
     List<String> folderList;
+    Map<String, String> keyMap;
+
 
     public DataLoad() {
-        this.folderList = new ArrayList<String>();
+        folderList = new ArrayList<String>();
+        keyMap = new HashMap<String, String>();
     }
 
- public List<String> scanFolder(File file){
-     String[] names = file.list(new FolderFilter(Pattern.compile("[a-zA-ZА-Яа-я1-9\\s]*")));
-     folderList = Arrays.asList(names);
-     return folderList;
- }
+    public List<String> scanFolder(File file) {
+        String[] names = file.list(new FolderFilter(Pattern.compile("[a-zA-ZА-Яа-я1-9\\s]*")));
+        folderList = Arrays.asList(names);
+        return folderList;
+    }
 
+    public Map<String, String> getKeys(File file) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"cp1251"));
+            String s = "";
+            while ((s = reader.readLine())!=null) {
+                String[] temp = s.split(":");
+                keyMap.put(temp[0], temp[1]);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return keyMap;
+    }
 
 
     public static class FolderFilter implements FilenameFilter {
         Pattern pattern;
+
         public FolderFilter(Pattern pattern) {
             this.pattern = pattern;
         }
