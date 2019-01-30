@@ -51,6 +51,23 @@ public class DataLoad {
         }
     }
 
+
+    public List<String> compareLists(List<String> folderList, Map<String, String> keyMap) {
+
+        ArrayList<String> rezult = new ArrayList<String>();
+
+
+        for (int i = 0; i < folderList.size(); i++) {
+            if (keyMap.containsKey(folderList.get(i))){
+                rezult.add(folderList.get(i));
+            }
+
+        }
+
+
+        return rezult;
+    }
+
     public List<String> getFolderList() {
         return folderList;
     }
