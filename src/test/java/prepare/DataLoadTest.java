@@ -29,7 +29,6 @@ public class DataLoadTest {
         testListOfFolders.add("Новая Папка1");
         testListOfFolders.add("Новая Папка2");
         testListOfFolders.add("Новая Папка3");
-
         keyMap.put("Новая Папка0", "someKey1");
         keyMap.put("Новая Папка1", "someKey1");
 
@@ -46,8 +45,9 @@ public class DataLoadTest {
 
     @Test
     public void compareLists() {
-        ArrayList<String> testList = (ArrayList<String>) dataLoad.compareLists(testListOfFolders, keyMap);
+       HashMap<String,String> testList = (HashMap<String, String>) dataLoad.compareLists(testListOfFolders, keyMap);
         assertEquals(2, testList.size());
+
 
     }
 }

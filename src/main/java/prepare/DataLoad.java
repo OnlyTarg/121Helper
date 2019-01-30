@@ -22,9 +22,9 @@ public class DataLoad {
 
     public Map<String, String> getKeys(File file) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"cp1251"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "cp1251"));
             String s = "";
-            while ((s = reader.readLine())!=null) {
+            while ((s = reader.readLine()) != null) {
                 String[] temp = s.split(":");
                 keyMap.put(temp[0], temp[1]);
             }
@@ -35,6 +35,19 @@ public class DataLoad {
             e.printStackTrace();
         }
         return keyMap;
+    }
+
+    public Map<String, String> compareLists(List<String> folderList, Map<String, String> keyMap) {
+
+        Map<String, String> rezult = new HashMap<String, String>();
+
+        for (int i = 0; i < folderList.size(); i++) {
+            String folderName = folderList.get(i);
+            if (keyMap.containsKey(folderName)) {
+                rezult.put(folderName, keyMap.get(folderName));
+            }
+        }
+        return rezult;
     }
 
 
@@ -49,23 +62,6 @@ public class DataLoad {
         public boolean accept(File dir, String name) {
             return pattern.matcher(name).matches();
         }
-    }
-
-
-    public List<String> compareLists(List<String> folderList, Map<String, String> keyMap) {
-
-        ArrayList<String> rezult = new ArrayList<String>();
-
-
-        for (int i = 0; i < folderList.size(); i++) {
-            if (keyMap.containsKey(folderList.get(i))){
-                rezult.add(folderList.get(i));
-            }
-
-        }
-
-
-        return rezult;
     }
 
     public List<String> getFolderList() {
