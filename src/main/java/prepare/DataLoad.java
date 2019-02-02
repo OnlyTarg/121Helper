@@ -1,6 +1,8 @@
 package prepare;
 
+import javax.swing.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -8,12 +10,31 @@ public class DataLoad {
     List<String> folderList;
     Map<String, String> keyMap;
 
+    public String getHomeFolder() {
+        return homeFolder;
+    }
+
+    String homeFolder;
+
 
     public DataLoad() {
         folderList = new ArrayList<String>();
         keyMap = new HashMap<String, String>();
+        homeFolder = findPathOfNeededFolder();
+
     }
 
+    public String findPathOfNeededFolder()  {
+        String fullPath = null;
+        try {
+            fullPath = new File(DataLoad.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath().toString();
+        } catch (URISyntaxException e) {
+            JOptionPane.showMessageDialog(null,"Проблема при зчитуванні корневої папки " + e.getMessage());
+            e.printStackTrace();
+        }
+        int possition = fullPath.lastIndexOf("\\");
+        return fullPath.substring(0, possition);
+    }
     public List<String> scanFolder(File file) {
         String[] names = file.list(new FolderFilter(Pattern.compile("[a-zA-ZА-Яа-я1-9\\s]*")));
         folderList = Arrays.asList(names);

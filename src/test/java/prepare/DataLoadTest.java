@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ public class DataLoadTest {
 
     @Test
     public void scanFolder() {
+
         testListOfFolders = dataLoad.scanFolder(new File("/"));
         assertNotNull(testListOfFolders);
 
@@ -49,5 +51,11 @@ public class DataLoadTest {
         assertEquals(2, testList.size());
 
 
+    }
+
+    @Test
+    public void findPathOfNeededFolder() {
+        String path = dataLoad.findPathOfNeededFolder();
+        assertNotNull(path);
     }
 }
