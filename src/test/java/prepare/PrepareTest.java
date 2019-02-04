@@ -2,11 +2,8 @@ package prepare;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,16 +11,15 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public class DataLoadTest {
-    DataLoad dataLoad;
+public class PrepareTest {
+    Prepare prepare;
     List<String> testListOfFolders;
     Map<String, String> keyMap;
 
     @Before
     public void setUp() throws Exception {
-        dataLoad = new DataLoad();
+        prepare = new Prepare();
         keyMap = new HashMap<String, String>();
         testListOfFolders = new ArrayList<String>();
         testListOfFolders.add("Новая Папка0");
@@ -39,7 +35,7 @@ public class DataLoadTest {
     @Test
     public void scanFolder() {
 
-        testListOfFolders = dataLoad.scanFolder(new File("/"));
+        testListOfFolders = prepare.scanFolder(new File("/"));
         assertNotNull(testListOfFolders);
 
 
@@ -47,7 +43,7 @@ public class DataLoadTest {
 
     @Test
     public void compareLists() {
-       HashMap<String,String> testList = (HashMap<String, String>) dataLoad.compareLists(testListOfFolders, keyMap);
+       HashMap<String,String> testList = (HashMap<String, String>) prepare.compareLists(testListOfFolders, keyMap);
         assertEquals(2, testList.size());
 
 
@@ -55,7 +51,7 @@ public class DataLoadTest {
 
     @Test
     public void findPathOfNeededFolder() {
-        String path = dataLoad.findPathOfNeededFolder();
+        String path = prepare.getHomeFolder();
         assertNotNull(path);
     }
 }

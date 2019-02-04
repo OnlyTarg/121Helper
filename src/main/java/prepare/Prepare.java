@@ -6,28 +6,12 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class DataLoad {
-    List<String> folderList;
-    Map<String, String> keyMap;
+public class Prepare {
 
-    public String getHomeFolder() {
-        return homeFolder;
-    }
-
-    String homeFolder;
-
-
-    public DataLoad() {
-        folderList = new ArrayList<String>();
-        keyMap = new HashMap<String, String>();
-        homeFolder = findPathOfNeededFolder();
-
-    }
-
-    public String findPathOfNeededFolder()  {
+    public String getHomeFolder()  {
         String fullPath = null;
         try {
-            fullPath = new File(DataLoad.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath().toString();
+            fullPath = new File(Prepare.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath().toString();
         } catch (URISyntaxException e) {
             JOptionPane.showMessageDialog(null,"Проблема при зчитуванні корневої папки " + e.getMessage());
             e.printStackTrace();
@@ -35,15 +19,17 @@ public class DataLoad {
         int possition = fullPath.lastIndexOf("\\");
         return fullPath.substring(0, possition);
     }
+
     public List<String> scanFolder(File file) {
         String[] names = file.list(new FolderFilter(Pattern.compile("[a-zA-ZА-Яа-я1-9\\s]*")));
-        folderList = Arrays.asList(names);
-        return folderList;
+        return Arrays.asList(names);
     }
-
-    public Map<String, String> getKeys(File file) {
+    public Map<String, String> getKeysMap(String path) {
+        Map<String, String> keyMap = new HashMap<String, String>();
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "cp1251"));
+
+            InputStream in = getClass().getResourceAsStream(path);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF8"));
             String s = "";
             while ((s = reader.readLine()) != null) {
                 String[] temp = s.split(":");
@@ -57,7 +43,6 @@ public class DataLoad {
         }
         return keyMap;
     }
-
     public Map<String, String> compareLists(List<String> folderList, Map<String, String> keyMap) {
 
         Map<String, String> rezult = new HashMap<String, String>();
@@ -70,7 +55,6 @@ public class DataLoad {
         }
         return rezult;
     }
-
 
     public static class FolderFilter implements FilenameFilter {
         Pattern pattern;
@@ -85,11 +69,4 @@ public class DataLoad {
         }
     }
 
-    public List<String> getFolderList() {
-        return folderList;
-    }
-
-    public void setFolderList(List<String> folderList) {
-        this.folderList = folderList;
-    }
 }
