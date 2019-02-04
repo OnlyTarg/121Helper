@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PrepareTest {
     Prepare prepare;
@@ -43,7 +44,7 @@ public class PrepareTest {
 
     @Test
     public void compareLists() {
-       HashMap<String,String> testList = (HashMap<String, String>) prepare.compareLists(testListOfFolders, keyMap);
+        HashMap<String, String> testList = (HashMap<String, String>) prepare.compareLists(testListOfFolders, keyMap);
         assertEquals(2, testList.size());
 
 
@@ -53,5 +54,14 @@ public class PrepareTest {
     public void findPathOfNeededFolder() {
         String path = prepare.getHomeFolder();
         assertNotNull(path);
+    }
+
+    @Test
+    public void getNamesFromFolder() {
+        File file = mock(File.class);
+        when(file.exists()).thenReturn(true);
+        when(file.list()).thenReturn(new String[]{"A","B","C"});
+        List<String> testList = prepare.getNamesFromFolder(file);
+        assertEquals(3, testList.size());
     }
 }

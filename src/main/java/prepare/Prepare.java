@@ -1,5 +1,7 @@
 package prepare;
 
+import jdk.nashorn.internal.scripts.JO;
+
 import javax.swing.*;
 import java.io.*;
 import java.net.URISyntaxException;
@@ -56,6 +58,23 @@ public class Prepare {
         return rezult;
     }
 
+    public List<String> getNamesFromFolder(File folder) {
+        if (folder.exists()) {
+            String[] names = folder.list();
+            return Arrays.asList(names);
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Папка \"ПОШТА\" не знайдена");
+            List<String> exeptionList = new ArrayList<String>();
+            exeptionList.add("Папка не знайдена");
+            return exeptionList;
+        }
+
+
+
+
+    }
+
     public static class FolderFilter implements FilenameFilter {
         Pattern pattern;
 
@@ -68,5 +87,6 @@ public class Prepare {
             return pattern.matcher(name).matches();
         }
     }
+
 
 }
