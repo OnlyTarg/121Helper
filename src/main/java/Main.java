@@ -13,28 +13,20 @@ public class Main {
     static Prepare prepare;
     Map<String, String> keysMAP;
     static File homefolder;
-    static String folderPOSHTA = "\\ПОШТА";
+    static File postFolder;
     static List<String> postList;
 
     static {
         prepare = new Prepare();
         homefolder = new File(prepare.getHomeFolder());
+        postFolder = new File(homefolder + "\\ПОШТА");
     }
 
     public static void main(String[] args) throws URISyntaxException {
-
         List<String> listOfFolders = prepare.scanFolder(new File(prepare.getHomeFolder()));
         HashMap<String, String> finalKeyMap = (HashMap<String, String>) prepare.compareLists(listOfFolders, prepare.getKeysMap(KEYS_TXT));
-
-
-        //fot test
-        JOptionPane.showMessageDialog(null, prepare.getKeysMap(KEYS_TXT));
-        postList =  prepare.getNamesFromFolder(new File(homefolder + folderPOSHTA));
-        System.out.println(postList);
-
-
+        postList = prepare.getNamesFromFolder(postFolder);
+        prepare.checkAndMove(postList, finalKeyMap, postFolder);
+        JOptionPane.showMessageDialog(null, "Переміщено " + prepare.getCount() + " файлів");
     }
 }
-
-//fot test
-//JOptionPane.showMessageDialog(null,"Знайдено " + prepare.getFolderList().size() + " папки" );
