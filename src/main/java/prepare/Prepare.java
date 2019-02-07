@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Prepare {
@@ -44,7 +45,7 @@ public class Prepare {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF8"));
             String s = "";
             while ((s = reader.readLine()) != null) {
-                String[] temp = s.split(":");
+                String[] temp = s.split("::");
                 keyMap.put(temp[0], temp[1]);
             }
             reader.close();
@@ -84,21 +85,34 @@ public class Prepare {
     }
 
     public void checkAndMove(List<String> postlist, Map<String, String> finalKeymap, File postFolder) throws URISyntaxException {
+        Set<String> keys = finalKeymap.keySet();
         for (String filename :
                 postlist) {
-            Set<String> keys = finalKeymap.keySet();
+
             for (String key :
                     keys) {
-                String regex = finalKeymap.get(key);
-                if (filename.contains(regex)) {
-                    File file = new File(postFolder + "\\" + filename);
-                    File targetFolder = new File(getHomeFolder() + "\\" + key + "\\" + filename);
-                    file.renameTo(targetFolder);
-                    count++;
+                Pattern[] regex = makePatternArray(finalKeymap.get(key));
+                for (int i = 0; i <regex.length ; i++) {
+                    if (regex[i].matcher(filename).find()) {
+                        File file = new File(postFolder + "\\" + filename);
+                        File targetFolder = new File(getHomeFolder() + "\\" + key + "\\" + filename);
+                        file.renameTo(targetFolder);
+                        count++;
+                    }
                 }
+
             }
 
         }
+    }
+
+    private Pattern [] makePatternArray (String str) {
+        String[] keyarray = str.split(":");
+        Pattern[] patternArray = new Pattern[keyarray.length];
+        for (int i = 0; i < keyarray.length; i++) {
+            patternArray[i] = Pattern.compile(keyarray[i]);
+        }
+        return patternArray;
     }
 
     public static class FolderFilter implements FilenameFilter {
