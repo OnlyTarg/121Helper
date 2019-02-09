@@ -46,7 +46,7 @@ public class Prepare {
             String s = "";
             while ((s = reader.readLine()) != null) {
                 String[] temp = s.split("::");
-                keyMap.put(temp[0], temp[1]);
+                keyMap.put(temp[0].trim(), temp[1].trim());
             }
             reader.close();
         } catch (FileNotFoundException e) {
@@ -89,15 +89,22 @@ public class Prepare {
         for (String filename :
                 postlist) {
 
+
             for (String key :
                     keys) {
+
                 Pattern[] regex = makePatternArray(finalKeymap.get(key));
                 for (int i = 0; i <regex.length ; i++) {
+
+
                     if (regex[i].matcher(filename).find()) {
                         File file = new File(postFolder + "\\" + filename);
                         File targetFolder = new File(getHomeFolder() + "\\" + key + "\\" + filename);
-                        file.renameTo(targetFolder);
-                        count++;
+                        if(!targetFolder.exists()){
+                            file.renameTo(targetFolder);
+                            count++;
+                        }
+
                     }
                 }
 
@@ -110,7 +117,8 @@ public class Prepare {
         String[] keyarray = str.split(":");
         Pattern[] patternArray = new Pattern[keyarray.length];
         for (int i = 0; i < keyarray.length; i++) {
-            patternArray[i] = Pattern.compile(keyarray[i]);
+            patternArray[i] = Pattern.compile(keyarray[i].trim());
+            System.out.println(patternArray[i].toString());
         }
         return patternArray;
     }
