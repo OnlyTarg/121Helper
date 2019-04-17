@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.onlytarg</groupId>
-    <artifactId>Helper121</artifactId>
+    <artifactId>Sloth</artifactId>
     <version>1.0</version>
     <properties>
         <project.build.sourceEncoding>utf8</project.build.sourceEncoding>
