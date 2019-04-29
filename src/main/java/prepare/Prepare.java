@@ -1,6 +1,5 @@
 package prepare;
 
-import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.io.*;
@@ -94,14 +93,29 @@ public class Prepare {
                     keys) {
 
                 Pattern[] regex = makePatternArray(finalKeymap.get(key));
-                for (int i = 0; i <regex.length ; i++) {
+                for (int i = 0; i < regex.length; i++) {
 
 
                     if (regex[i].matcher(filename).find()) {
                         File file = new File(postFolder + "\\" + filename);
-                        File targetFolder = new File(getHomeFolder() + "\\" + key + "\\" + filename);
-                        if(!targetFolder.exists()){
-                            file.renameTo(targetFolder);
+                        File targetfolder = new File(getHomeFolder() + "\\" + key);
+                        File targetFile = new File(getHomeFolder() + "\\" + key + "\\" + filename);
+                        if (!targetFile.exists()) {
+                            file.renameTo(targetFile);
+                            count++;
+                        } else {
+                            String latestDublicate = findLatestNumberOfExistingCopy(targetfolder, filename);
+                            if (numberOdDublicate(filename) > 0) {
+                                File newFile = new File(getHomeFolder() + "\\" + key + "\\" + latestDublicate);
+                                file.renameTo(newFile);
+                                count++;
+                                continue;
+                            }
+
+
+
+
+                            file.renameTo(new File(targetfolder + "\\" + renameDublicate(latestDublicate, latestDublicate)));
                             count++;
                         }
 
@@ -113,12 +127,108 @@ public class Prepare {
         }
     }
 
-    private Pattern [] makePatternArray (String str) {
+    public String renameDublicate(String fileName, String latestdublicate) {
+
+        int latestdublicat = numberOdDublicate(latestdublicate);
+        int numberOfDublicate = numberOdDublicate(fileName);
+        int indexofLastDot = fileName.lastIndexOf('.');
+        String firstPartOfName = fileName.substring(0, indexofLastDot);
+        String secondPartOfName = fileName.substring(indexofLastDot + 1);
+        if (numberOfDublicate > 0) {
+            firstPartOfName = firstPartOfName.substring(0, firstPartOfName.lastIndexOf('('));
+            return firstPartOfName + "(" + (++latestdublicat) + ")." + secondPartOfName;
+        } else {
+            return firstPartOfName + "(1)." + secondPartOfName;
+
+        }
+
+    }
+
+    // Sf some dublicats of given file exist, this method return last number of existing file
+    // Example: app attempt to allocate file Pavel.doc
+    // if target folder already consist one or more copies of this file (like Pavel(2).doc and Pavel(3).doc) this method will return
+    // number of latest copy. In this case is "3".
+/*    public Integer findLatestNumberOfExistingCopy(File folder, String originalString) {
+        int countOfDublicate = -1;
+        String firstPartOfOriginalString = originalString.substring(0,originalString.lastIndexOf('.'));
+        String[] fileList = folder.list();
+        for (String name :
+                fileList) {
+            if (name.matches(firstPartOfOriginalString+"\\(\\d+\\)..*")){
+                int currentCoun = numberOdDublicate(name);
+                if (countOfDublicate < currentCoun) {
+                    countOfDublicate = currentCoun;
+                }
+            }
+        }
+        return countOfDublicate;
+    }*/
+    public String findLatestNumberOfExistingCopy(File folder, String originalString) {
+        String result = originalString;
+        int countOfDublicate = -1;
+        String temp = originalString.substring(0, originalString.lastIndexOf('.'));
+        String firstPartOfOriginalString = "";
+        if(numberOdDublicate(originalString)>0) {
+             firstPartOfOriginalString = temp.substring(0, originalString.lastIndexOf('('));
+        }
+        else{
+            firstPartOfOriginalString = temp;
+        }
+
+
+            String[] fileList = folder.list();
+            for (String name :
+                    fileList) {
+                if (name.matches(firstPartOfOriginalString + "\\(\\d+\\)..*")) {
+                    int currentCoun = numberOdDublicate(name);
+                    if (countOfDublicate < currentCoun) {
+                        countOfDublicate = currentCoun;
+                        String temp1 = name.substring(0, originalString.lastIndexOf('.'));
+                        String temp2 = originalString.substring(originalString.lastIndexOf('.'));
+                        String firstPart = "";
+                        String rezultname = "";
+                        if (numberOdDublicate(originalString) > 0) {
+                            firstPart = temp1.substring(0, originalString.lastIndexOf('('));
+                            rezultname = firstPart + "(" + ++currentCoun + ")" + temp2;
+                        }
+                        else{
+                            firstPart = temp1.substring(0,originalString.lastIndexOf('.'));
+                            rezultname = firstPart + "(" + currentCoun + ")" + temp2;
+                        }
+                        result = rezultname;
+                    }
+                }
+            }
+
+        return result;
+    }
+
+
+    public Integer numberOdDublicate(String s) {
+
+        int numberOfDublicate = 0;
+        char charBeforeDot = s.charAt(s.lastIndexOf('.') - 1);
+        if (charBeforeDot == ')') {
+            String str = s.substring(0, s.lastIndexOf(')'));
+            if (str.lastIndexOf('(') > 0) {
+                String digit = str.substring(str.lastIndexOf('(') + 1);
+                if (isNumeric(digit)) {
+                    numberOfDublicate = Integer.valueOf(digit);
+                    return numberOfDublicate;
+                }
+            }
+
+
+        }
+        return numberOfDublicate;
+    }
+
+
+    private Pattern[] makePatternArray(String str) {
         String[] keyarray = str.split(":");
         Pattern[] patternArray = new Pattern[keyarray.length];
         for (int i = 0; i < keyarray.length; i++) {
             patternArray[i] = Pattern.compile(keyarray[i].trim());
-            System.out.println(patternArray[i].toString());
         }
         return patternArray;
     }
@@ -136,5 +246,7 @@ public class Prepare {
         }
     }
 
-
+    private static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
 }

@@ -1,10 +1,10 @@
 package prepare;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,10 +85,57 @@ public class PrepareTest {
     }
 
     @Test
+@Ignore
     public void checkAndMove() throws URISyntaxException {
-        /*System.out.println(postList);
+        System.out.println(postList);
         System.out.println(finalKeyMap);
-        System.out.println(postFolder);*/
+        System.out.println(postFolder);
+        File file = mock(File.class);
+        String[] folderlist = {"Pavlik(257).doc","Pavlik(256).doc", "Olha.doc", "Bereza.zip"};
+        when(file.list()).thenReturn(folderlist);
+        prepare.checkAndMove(postList,finalKeyMap,postFolder);
+
         //prepare.checkAndMove(postList,finalKeyMap,postFolder);
+    }
+
+    @Test
+    public void numberOdDublicate() {
+        String testString = "(34585jk((25).doc";
+        Prepare prepare = new Prepare();
+        int i = prepare.numberOdDublicate(testString);
+        assertEquals(25, i);
+    }
+
+   /* @Test
+
+    public void renameDublicate() {
+        Prepare prepare = new Prepare();
+        String str = prepare.renameDublicate("Pavlik1(1).doc",1);
+        assertEquals(str,"Pavlik1(2).doc");
+    }*/
+
+    @Test
+    public void isDublicateExist() {
+        /*String originalfileName = "Pavlik.doc";
+        String firstPartOfOriginalString = originalfileName.substring(0,originalfileName.lastIndexOf('.'));
+        System.out.println("firstpart = " + firstPartOfOriginalString);
+        String testString = "Pavlik(2).doc";
+
+        String regex = firstPartOfOriginalString+"\\(\\d\\)..*";
+        Pattern pattern = Pattern.compile("Pavlik\\(\\d+\\)..*");
+        System.out.println("regex = " + regex);
+        if(testString.matches(regex)){
+            System.out.println("Good");
+        }
+        else {
+            System.out.println("Fail");
+        }*/
+        /*File file = mock(File.class);
+        String[] folderlist = {"Pavlik(257).doc","Pavlik(256).doc", "Olha.doc", "Bereza.zip"};
+        when(file.list()).thenReturn(folderlist);
+        int rezult = prepare.findLatestNumberOfExistingCopy(file, "Pavlik.doc");
+        assertEquals(257,rezult);*/
+
+
     }
 }
