@@ -3,8 +3,10 @@ package prepare;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PrepareTest {
     Prepare prepare;
+
     List<String> testListOfFolders;
     Map<String, String> keyMap;
     List<String> postList;
@@ -55,7 +57,7 @@ public class PrepareTest {
     @Test
     public void scanFolder() {
 
-        testListOfFolders = prepare.scanFolder(new File("/"));
+        testListOfFolders = prepare.findFolders(new File("/"));
         assertNotNull(testListOfFolders);
 
 
@@ -102,7 +104,7 @@ public class PrepareTest {
     public void numberOdDublicate() {
         String testString = "(34585jk((25).doc";
         Prepare prepare = new Prepare();
-        int i = prepare.numberOdDublicate(testString);
+        int i = prepare.numberOfDublicate(testString);
         assertEquals(25, i);
     }
 
@@ -135,6 +137,24 @@ public class PrepareTest {
         when(file.list()).thenReturn(folderlist);
         int rezult = prepare.findLatestNumberOfExistingCopy(file, "Pavlik.doc");
         assertEquals(257,rezult);*/
+
+
+    }
+
+    @Test
+    public void getHomeFolder() {
+        assertNotNull(prepare.getHomeFolder());
+
+    }
+
+    @Test
+    public void findFolders() {
+        String[] testFolder = {"Папка1","2323","Папка3","Папка4","1.doc","some.rar","Витяг.doc" };
+        File testFile = mock(File.class);
+        when(testFile.list()).thenReturn(testFolder);
+        List<String> foldersList = prepare.findFolders(testFile);
+        assertNotNull(foldersList);
+        assertEquals(4,foldersList.size());
 
 
     }
